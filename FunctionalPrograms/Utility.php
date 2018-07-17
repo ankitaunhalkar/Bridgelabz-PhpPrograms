@@ -1,28 +1,62 @@
 <?php
 
+include "Logging.php";
+
 #String Input Method
 function inputString()
 {
     fscanf(STDIN, "%s\n", $str);
+
+    if (is_numeric($str)) {
+
+        echo "Please! Enter only String:\n";
+
+        Logging::logger("User entered Invalid input instead of string");
+
+        return Utility::inputString();
+
+    }
     return $str;
 }
 
 #Integer Input Method
 function inputInt()
 {
-    fscanf(STDIN, "%d\n", $str);
-    // $word= strchr($str,".");
-    // echo "double value" .$word;
-    return $str;
+    fscanf(STDIN, "%s\n", $str);
+
+    if (filter_var($str, FILTER_VALIDATE_INT)) {
+
+        return $str;
+
+    } else {
+
+        echo "Please! Enter only integer values:\n";
+
+        Logging::logger("User entered Invalid input instead of Integer");
+
+        return Utility::inputInt();
+    }
+
 }
 
 #Float Input Method
 function inputFloat()
 {
-    fscanf(STDIN, "%f\n", $num);
-    return $num;
-}
+    fscanf(STDIN, "%s\n", $str);
 
+    if (filter_var($str, FILTER_VALIDATE_FLOAT)) {
+
+        return $num;
+
+    } else {
+
+        echo "Please! Enter FLoat Value:\n";
+
+        Logging::logger("User entered Invalid input instead of Integer");
+
+        return Utility::inputFloat();
+    }
+}
 #Array input of Int
 function inputArray($n)
 {
@@ -40,18 +74,17 @@ function inputArray($n)
 #Method to check Leap Year
 function isLeap($year)
 {
-    if (strlen($year)==4) 
-    {
+    if (strlen($year) == 4) {
         if ($year % 4 == 0 || $year % 400 == 0 && $year % 100 != 0) {
             return true;
         } else {
             return false;
         }
-    }
-    else{
-        
+    } else {
+
+        Logging :: logger("Length should be equal to 4");
         throw new LengthException("Length should be equal to 4");
-        
+
     }
 
 }
@@ -62,6 +95,7 @@ function harmonicValue($num)
     $harmonicValue = 0;
 
     for ($i = 1; $i <= $num; $i++) {
+
         $harmonicValue += 1 / $i;
     }
 
@@ -72,9 +106,13 @@ function harmonicValue($num)
 function powerOf2($num)
 {
     if ($num >= 0 && $num <= 31) {
+
         $value = 1;
+
         for ($i = 0; $i <= $num; $i++) {
+
             echo "2^$i = $value \n";
+
             $value = 2 * $value;
         }
     } else {
@@ -86,15 +124,23 @@ function powerOf2($num)
 function primeFactor($num)
 {
     for ($i = 2; $i * $i <= $num; $i++) {
+
         while ($num % $i == 0) {
+
             echo "$i ";
+
             $num = $num / $i;
+
         }
     }
     if ($num > 1) {
+
         echo "$num \n";
+
     } else {
+
         echo "\n";
+        
     }
 
 }
@@ -279,4 +325,5 @@ class Utility
         $w = (35.74 + 0.6215 * $t + (0.4275 * $t - 35.75) * $vpow);
         echo "\nWindmill:", $w . "\n";
     }
+
 }

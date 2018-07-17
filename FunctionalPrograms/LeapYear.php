@@ -16,7 +16,6 @@ try {
 } catch (LengthException $e) {
     
     echo "Message:" . $e->getMessage();
-    error_log($e->getMessage() . "\n", 3, "/var/www/html/error.log");
     echo "\n";
 
 }
