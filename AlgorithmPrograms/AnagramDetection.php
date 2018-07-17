@@ -3,7 +3,7 @@
 include "Utility.php";
 
 echo "Enter String 1:\n";
-$str1 =  Utility :: inputLine();
+$str1 =  Utility :: inputString();
 $str1 =preg_replace('/\s*/', '', $str1);
 $string1 = strtolower($str1);
 

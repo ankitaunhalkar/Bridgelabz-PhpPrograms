@@ -3,9 +3,7 @@
 include "Utility.php";
 
 echo "Enter nth term:\n";
-$str = Utility :: inputString();
-$n = intval($str);
-
+$str = Utility :: intputInt();
 
 $arr = Utility :: primeNumbers($n);
 
