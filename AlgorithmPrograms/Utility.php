@@ -2,7 +2,7 @@
 include "Logging.php";
 class Utility
 {
-
+    
     #Method to Read Line
     public static function inputLine()
     {
@@ -12,6 +12,13 @@ class Utility
 
     }
 
+    #Method to take all kind of inputs
+    public static function input()
+    {
+        fscanf(STDIN, "%s\n", $str);
+
+        return $str;
+    }
     #String Input Method
     public static function inputString()
     {
@@ -68,7 +75,9 @@ class Utility
 
         for ($i = 0; $i < $n; $i++) {
 
-            $arr[$i] = inputInt();
+            //$arr[$i] = inputInt();
+            $value = Utility::input();
+            array_push($arr, $value);
 
         }
 
@@ -181,43 +190,98 @@ class Utility
         echo "\nNumber of changes:" . $count . "\n";
     }
 
+    public static function vending($amount, $i)
+    {
+        $notes = array(1000, 500, 100, 50, 10, 5, 2, 1);
+        static $count = [0, 0, 0, 0, 0, 0, 0, 0];
+        if ($amount > 0) {
+            if ($amount >= $notes[$i]) {
+                $amount -= $notes[$i];
+                echo $notes[$i] . " ";
+                $count[$i]++;
+                Utility::vending($amount, $i);
+            } else {
+                Utility::vending($amount, ++$i);
+            }
+        } else {
+            $counter = array_combine($notes, $count);
+            $numOfNotes = 0;
+            foreach ($counter as $key => $value) {
+                if ($value != 0) {
+                    echo "\nCount of $key is $value";
+                    $numOfNotes += $value;
+                }
+            }
+            echo "\nNumber of notes are: $numOfNotes \n";
+        }
+
+    }
+
     public static function dayOfWeek($m, $d, $y)
     {
-        $y1 = floor($y - (14 - $m) / 12);
-        $x = floor(($y1 + $y1 / 4) - ($y1 / 100 + $y1 / 400));
-        $m1 = floor(($m + 12) * (14 - $m) / 12 - 2);
-        $d1 = floor(($d + $x + (31 * $m1) / 12) % 7);
+        if ($m > 12) {
 
-        echo "Day is: ";
+            throw new UnexpectedValueException("Month cannot be greater then 12\n");
 
-        switch ($d1) {
+        } elseif ($d > 31) {
 
-            case 0:
-                echo "Sunday\n";
-                break;
+            throw new UnexpectedValueException("Day cannot be greater then 31st\n");
 
-            case 1:
-                echo "Monday\n";
-                break;
+        } elseif ($m == 2) {
+            if ($y % 4 || $y % 400 && $y % 100 != 0) {
+                if ($d > 29) {
+                    throw new UnexpectedValueException("Day cannot be greater then 29. It's a leap year");
+                }
+            }if ($d > 28) {
+                throw new UnexpectedValueException("Day cannot be greater then 28. ");
+            }
+        } elseif ($m == 4 || $m == 6 || $m == 9 || $m == 11) {
 
-            case 2:
-                echo "Tuesday\n";
-                break;
-            case 3:
-                echo "Wednesday\n";
-                break;
-            case 4:
-                echo "Thursday\n";
-                break;
-            case 5:
-                echo "Friday\n";
-                break;
-            case 6:
-                echo "Saturday\n";
-                break;
+            if ($d > 30) {
 
-            default:
-                break;
+                throw new UnexpectedValueException("Day cannot be greater then 30\n");
+
+            }
+
+        } else {
+            $y1 = floor($y - (14 - $m) / 12);
+            $x = floor(($y1 + $y1 / 4) - ($y1 / 100 + $y1 / 400));
+            $m1 = floor(($m + 12) * (14 - $m) / 12 - 2);
+            $d1 = floor(($d + $x + (31 * $m1) / 12) % 7);
+
+            echo "Day is: ";
+
+            switch ($d1) {
+
+                case 0:
+                    echo "Sunday\n";
+                    break;
+
+                case 1:
+                    echo "Monday\n";
+                    break;
+
+                case 2:
+                    echo "Tuesday\n";
+                    break;
+
+                case 3:
+                    echo "Wednesday\n";
+                    break;
+
+                case 4:
+                    echo "Thursday\n";
+                    break;
+
+                case 5:
+                    echo "Friday\n";
+                    break;
+
+                case 6:
+                    echo "Saturday\n";
+                    break;
+
+                }
         }
     }
 
@@ -240,9 +304,9 @@ class Utility
     #Method to calculate Monthly Payment
     public static function monthlyPayment($p, $r, $y)
     {
-        $n = $y * 12;
+        $month = $y * 12;
         $rate = $r / (12 * 100);
-        $payment = ($p * $rate) / (1 - pow(1 + $rate, -$n));
+        $payment = ($p * $rate) / (1 - pow(1 + $rate, -$month));
         echo "Monthly Payment is:" . $payment . "\n";
     }
 
@@ -274,7 +338,7 @@ class Utility
                 $str .= 1;
                 $num -= $pow;
             }
-            $pow = floor( $pow / 2 );
+            $pow = floor($pow / 2);
         }
         return $str;
         //$result = decbin($num);
@@ -287,45 +351,139 @@ class Utility
     {
 
         $len = strlen($binary);
-        if(strlen($binary)<8)
-        {
-            while (strlen($binary)<8)
-            {
-                $binary = "0".$binary;
-                
+        if (strlen($binary) < 8) {
+            while (strlen($binary) < 8) {
+                $binary = "0" . $binary;
+
             }
         }
-        echo "Before Swapping Nibbles:".$binary."\n";
-        $arr = str_split($binary,1);
-       
-        for ($i=0;$i<4;$i++)
-        {
+        echo "Before Swapping Nibbles:" . $binary . "\n";
+        $arr = str_split($binary, 1);
+
+        for ($i = 0; $i < 4; $i++) {
             $ch = $arr[$i];
-            $arr[$i]= $arr[$i+4];
-            $arr[$i+4]= $ch;
+            $arr[$i] = $arr[$i + 4];
+            $arr[$i + 4] = $ch;
         }
-       
+
         $binary = implode($arr);
-        echo "After Swapping Nibbles:".$binary."\n";
-        $c = (int)$binary;
+        echo "After Swapping Nibbles:" . $binary . "\n";
+        $c = (int) $binary;
         $decimal = 0;
         $power = 0;
+
         // to convert binary to decimal
-        while(true)
-        {
-            if($c == 0)
-            {
+        while (true) {
+            if ($c == 0) {
                 break;
-            }
-            else
-            {
-                $tmp = $c%10;
-                $decimal += $tmp*pow(2, $power);
-                $c = $c/10;
+            } else {
+                $tmp = $c % 10;
+                $decimal += $tmp * pow(2, $power);
+                $c = $c / 10;
                 $power++;
             }
         }
-        echo "Number after Swapping Nibbles: " .$decimal."\n";
+        echo "Number after Swapping Nibbles: " . $decimal . "\n";
 
     }
+
+    #Method for Binary Search
+    public static function binarySearch(){
+        echo "Enter the array length:\n";
+
+        $n = Utility::inputInt();
+
+        echo "Enter the elements into array:\n";
+        $arr = Utility::inputArray($n);
+
+        echo "Enter the element to search:\n";
+        $key = Utility::input();
+
+        $status = Utility :: binarySearchLogic($arr, $key);
+
+        return $status;
+    }
+    public static function binarySearchLogic($arr,$key)
+    {
+        
+        if (count($arr) == 0) {
+            return false;
+        }
+
+        sort($arr);
+
+        $low = 0;
+        $high = count($arr) - 1;
+
+        while ($low <= $high)
+         {
+            $mid = floor(($low + $high) / 2);
+
+            if ($arr[$mid] == $key) {
+                return true;
+            }
+            if ($key < $arr[$mid]) {
+                $high = $mid - 1; //left
+            } else {
+                $low = $mid + 1; //right
+            }
+        }
+
+        return false;
+    }
+
+    #Method for Insertion Sort
+    public static function insertionSort()
+    {
+
+        echo "Enter the array length:\n";
+
+        $n = Utility::inputInt();
+
+        echo "Enter the elements into array:\n";
+        $array = Utility::inputArray($n);
+
+        $sortedArray = array();
+        $j = 0;
+        for ($i = 0; $i < count($array); $i++) {
+            $element = $array[$i];
+            $j = $i;
+            while ($j > 0 && $sortedArray[$j - 1] > $element) {
+                $sortedArray[$j] = $sortedArray[$j - 1];
+                $j = $j - 1;
+            }
+            $sortedArray[$j] = $element;
+        }
+        return $sortedArray;
+    }
+
+    #Method for Bubble Sort
+    public static function bubbleSort()
+    {
+        echo "Enter the array length:\n";
+
+        $n = Utility::inputInt();
+
+        echo "Enter the elements into array:\n";
+        $array = Utility::inputArray($n);
+
+        for ($i = 0; $i < count($array); $i++) {
+            for ($j = $i + 1; $j < count($array); $j++) {
+                if ($array[$i] > $array[$j]) {
+                    $temp = $array[$i];
+                    $array[$i] = $array[$j];
+                    $array[$j] = $temp;
+                }
+            }
+        }
+        return $array;
+    }
+
+    #Method for stopwatch
+    public static function stopWatch($start, $end)
+    {
+        $timeLapsed = ($end - $start);
+        return $timeLapsed;
+    }
+
 }

@@ -5,6 +5,6 @@ include "Utility.php";
 echo "Enter the amount whose minimum changes to be returned:";
 $amount = Utility :: inputInt();
 
-Utility :: vendingMachine($amount);
+Utility :: vending($amount,0);
 
 ?>
